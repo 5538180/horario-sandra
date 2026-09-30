@@ -1,0 +1,67 @@
+name: Publicar APK
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar Android 36
+        run: sdkmanager "platforms;android-36"
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Permitir ejecutar Gradle
+        run: chmod +x gradlew
+
+      - name: Recuperar la firma de actualización
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/horario-sandra.keystore"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/horario-sandra.keystore" >> "$GITHUB_ENV"
+
+      - name: Obtener la versión de la aplicación
+        id: version
+        run: |
+          VERSION=$(sed -n 's/.*versionName = "\([^"]*\)".*/\1/p' app/build.gradle.kts)
+          test -n "$VERSION"
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Ejecutar pruebas y compilar la APK
+        run: ./gradlew test assembleRelease
+
+      - name: Preparar archivos de descarga
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk Horario-Sandra.apk
+          cp Horario-Sandra.apk "Horario-Sandra-v${{ steps.version.outputs.value }}.apk"
+
+      - name: Crear publicación de GitHub Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            Horario-Sandra.apk \
+            "Horario-Sandra-v${{ steps.version.outputs.value }}.apk" \
+            --title "Horario Sandra v${{ steps.version.outputs.value }}" \
+            --generate-notes

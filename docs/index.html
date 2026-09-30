@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Horario Sandra para Android: horario, patios, biblioteca, apoyos y tareas en un widget.">
+    <title>Horario Sandra para Android</title>
+    <style>
+      :root {
+        --ink: #213547;
+        --navy: #30475e;
+        --paper: #fbfcfd;
+        --line: #d7e0e7;
+        --page: #edf4f7;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      a { color: inherit; }
+
+      .site-header {
+        border-bottom: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .nav {
+        width: min(1100px, calc(100% - 32px));
+        min-height: 58px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        color: var(--navy);
+        font-size: 18px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 14px;
+      }
+
+      .nav-links a { text-decoration: none; }
+
+      .hero {
+        min-height: calc(100svh - 58px);
+        padding: 54px 16px 0;
+        overflow: hidden;
+        background: var(--page);
+        text-align: center;
+      }
+
+      .hero-copy {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--navy);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1, h2, p { margin-top: 0; }
+
+      h1 {
+        margin-bottom: 16px;
+        color: var(--navy);
+        font-size: clamp(38px, 7vw, 68px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .hero-copy > p:not(.eyebrow) {
+        max-width: 620px;
+        margin: 0 auto 24px;
+        font-size: 18px;
+        line-height: 1.55;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 18px;
+        border: 1px solid var(--navy);
+        border-radius: 6px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .button-primary {
+        background: var(--navy);
+        color: #ffffff;
+      }
+
+      .button-secondary {
+        background: #ffffff;
+        color: var(--navy);
+      }
+
+      .preview {
+        display: block;
+        width: min(340px, 78vw);
+        margin: 36px auto -112px;
+        border: 9px solid #ffffff;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 10px 22px rgba(33, 53, 71, 0.16);
+      }
+
+      .band {
+        padding: 146px 16px 64px;
+        background: #ffffff;
+      }
+
+      .content {
+        width: min(1100px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      h2 {
+        color: var(--navy);
+        font-size: 28px;
+        letter-spacing: 0;
+      }
+
+      .latest {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 20px;
+        padding-bottom: 48px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .latest p, .updates-row p { margin-bottom: 0; line-height: 1.5; }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .feature {
+        min-height: 154px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        background: #ffffff;
+      }
+
+      .feature:nth-child(2) { background: #fffbeb; }
+      .feature:nth-child(3) { background: #eff9f0; }
+
+      .feature h3 {
+        margin: 0 0 10px;
+        color: var(--navy);
+        font-size: 18px;
+      }
+
+      .feature p { margin-bottom: 0; line-height: 1.5; }
+
+      .updates {
+        padding: 64px 16px;
+        background: var(--page);
+      }
+
+      .updates-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      footer {
+        padding: 24px 16px;
+        background: var(--navy);
+        color: #ffffff;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      @media (max-width: 700px) {
+        .nav { min-height: 54px; }
+        .nav-links { gap: 12px; font-size: 13px; }
+        .hero { min-height: calc(100svh - 54px); padding-top: 42px; }
+        .hero-copy > p:not(.eyebrow) { font-size: 16px; }
+        .preview { margin-top: 28px; }
+        .latest, .updates-row { display: block; }
+        .latest .button, .updates-row .button { margin-top: 18px; }
+        .feature-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Navegación principal">
+        <a class="brand" href="#inicio">Horario Sandra</a>
+        <div class="nav-links">
+          <a href="#novedades">Novedades</a>
+          <a href="https://github.com/5538180/horario-sandra" target="_blank" rel="noreferrer">Código</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="inicio">
+      <section class="hero" aria-labelledby="title">
+        <div class="hero-copy">
+          <p class="eyebrow">Android · Widget · Calendario escolar</p>
+          <h1 id="title">Horario Sandra</h1>
+          <p>Consulta el horario, los turnos de patio y biblioteca, los apoyos en el aula y las tareas desde una aplicación pensada para el día a día del centro.</p>
+          <div class="actions">
+            <a class="button button-primary" href="https://github.com/5538180/horario-sandra/releases/latest/download/Horario-Sandra.apk">Descargar última versión</a>
+            <a class="button button-secondary" href="https://github.com/5538180/horario-sandra/releases/latest" target="_blank" rel="noreferrer">Ver publicaciones</a>
+          </div>
+        </div>
+        <img class="preview" src="assets/widget-preview.png" alt="Vista del widget de Horario Sandra en Android">
+      </section>
+
+      <section class="band" aria-labelledby="latest-title">
+        <div class="content latest">
+          <div>
+            <h2 id="latest-title">Última publicación</h2>
+            <p id="release-status" aria-live="polite">Consultando la versión más reciente en GitHub…</p>
+          </div>
+          <a class="button button-primary" href="https://github.com/5538180/horario-sandra/releases/latest/download/Horario-Sandra.apk">Descargar APK</a>
+        </div>
+
+        <div class="content" style="padding-top: 56px;">
+          <h2>Todo lo necesario, a mano</h2>
+          <div class="feature-grid">
+            <article class="feature">
+              <h3>Horario y apoyos</h3>
+              <p>Las clases indican la persona de apoyo que acompaña a Sandra en cada tramo correspondiente.</p>
+            </article>
+            <article class="feature">
+              <h3>Patio y biblioteca</h3>
+              <p>La rotación sigue el calendario del centro y resalta a la persona responsable de biblioteca.</p>
+            </article>
+            <article class="feature">
+              <h3>Widget y tareas</h3>
+              <p>Cambia entre día y semana, navega por fechas y marca tareas sin abrir la aplicación.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="novedades" class="updates" aria-labelledby="updates-title">
+        <div class="content updates-row">
+          <div>
+            <h2 id="updates-title">Seguimiento de actualizaciones</h2>
+            <p>Cada versión se publica en GitHub Releases y conserva una APK estable para descargar siempre la última.</p>
+          </div>
+          <a class="button button-secondary" href="https://github.com/5538180/horario-sandra/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">Leer historial de cambios</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>Horario Sandra · Proyecto Android de uso escolar</footer>
+
+    <script>
+      const status = document.getElementById("release-status");
+      fetch("https://api.github.com/repos/5538180/horario-sandra/releases/latest")
+        .then((response) => {
+          if (!response.ok) throw new Error("No hay publicación todavía");
+          return response.json();
+        })
+        .then((release) => {
+          const date = new Intl.DateTimeFormat("es-ES", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+          }).format(new Date(release.published_at));
+          status.textContent = `${release.name || release.tag_name} · publicada el ${date}`;
+        })
+        .catch(() => {
+          status.textContent = "La próxima publicación aparecerá aquí automáticamente.";
+        });
+    </script>
+  </body>
+</html>
