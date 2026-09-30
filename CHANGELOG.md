@@ -2,6 +2,14 @@
 
 Este proyecto sigue el formato de [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
+## [1.5.4] - 2026-09-30
+
+### Añadido
+
+- Publicación automática de la APK firmada en GitHub Releases.
+- Enlace de descarga permanente a la versión más reciente.
+- Página pública de presentación y seguimiento del historial de cambios.
+
 ## [1.5.3] - 2026-09-30
 
 ### Añadido
