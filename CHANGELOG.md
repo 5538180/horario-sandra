@@ -2,6 +2,16 @@
 
 Este proyecto sigue el formato de [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
+## [1.5.5] - 2026-10-02
+
+### Cambiado
+
+- Actualizado el apoyo del martes de 10:00 a 11:00.
+- Sustituida la complementaria de tutoría del jueves de 09:00 a 10:00 por Matemáticas con apoyo en 3.º C.
+- Añadido el apoyo de AT los lunes y jueves de 12:00 a 13:00 y los viernes de 12:00 a 14:00, conservando el apoyo docente existente.
+- Eliminado el vespertino del viernes de 14:00 a 15:00.
+- Los cambios se reflejan en la aplicación, el widget y la exportación a calendario.
+
 ## [1.5.4] - 2026-09-30
 
 ### Añadido

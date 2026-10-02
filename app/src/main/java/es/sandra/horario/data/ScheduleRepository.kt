@@ -72,7 +72,7 @@ object ScheduleRepository {
             ),
             entry("11:00", "11:30", "Sociales", type = ScheduleType.SOCIAL_SCIENCE),
             patioSlot(),
-            entry("12:00", "13:00", "Sociales", type = ScheduleType.SOCIAL_SCIENCE),
+            entry("12:00", "13:00", "Sociales", type = ScheduleType.SOCIAL_SCIENCE, supportTeacher = "AT: Nazaret"),
             entry("13:00", "14:00", "Matemáticas", type = ScheduleType.MATH),
             entry(
                 "14:00",
@@ -89,7 +89,7 @@ object ScheduleRepository {
                 "11:00",
                 "Lengua",
                 type = ScheduleType.LANGUAGE,
-                supportTeacher = "Lucía Moya"
+                supportTeacher = "Luis García"
             ),
             patioSlot(),
             entry("12:00", "13:00", "Naturales", type = ScheduleType.NATURAL_SCIENCE),
@@ -109,11 +109,11 @@ object ScheduleRepository {
             entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE)
         )
         DayOfWeek.THURSDAY -> listOf(
-            entry("09:00", "10:00", "Complementaria Tutoría", type = ScheduleType.COMPLEMENTARY_TUTORING),
+            entry("09:00", "10:00", "Matemáticas", "Yo apoyo en 3.º C\nMaría Carmen Noguera Cayuelas", ScheduleType.MATH),
             entry("10:00", "10:30", "Religión", type = ScheduleType.RELIGION),
             entry("10:30", "11:00", "Matemáticas", type = ScheduleType.MATH),
             patioSlot(),
-            entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE),
+            entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE, supportTeacher = "AT: Nazaret"),
             entry(
                 "13:00",
                 "14:00",
@@ -127,15 +127,14 @@ object ScheduleRepository {
             entry("10:00", "10:30", "Religión", type = ScheduleType.RELIGION),
             entry("10:30", "11:00", "Naturales", type = ScheduleType.NATURAL_SCIENCE),
             patioSlot(),
-            entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE),
+            entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE, supportTeacher = "AT: Nazaret"),
             entry(
                 "13:00",
                 "14:00",
                 "Lengua",
                 type = ScheduleType.LANGUAGE,
-                supportTeacher = "María Carmen Noguera Cayuelas"
-            ),
-            entry("14:00", "15:00", "Docencia", "Vespertino: Sandra - Natalia", ScheduleType.VESPERTINO)
+                supportTeacher = "María Carmen Noguera Cayuelas\nAT: Nazaret"
+            )
         )
         else -> emptyList()
     }
