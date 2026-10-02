@@ -4,6 +4,14 @@ Aplicación Android para consultar el horario de Sandra, los turnos de patio y b
 
 [Descargar siempre la última versión](https://github.com/5538180/horario-sandra/releases/latest/download/Horario-Sandra.apk) · [Página de presentación](https://5538180.github.io/horario-sandra/) · [Historial de cambios](CHANGELOG.md)
 
+## Colaborar
+
+Para proponer una mejora, abre una [solicitud de cambio](../../issues/new?template=change-request.yml) y describe el resultado esperado. El proyecto compartido de ChatGPT `Horario-Sandra` sirve para hablar de las ideas; GitHub conserva el codigo, las revisiones y las versiones publicadas.
+
+Quien vaya a modificar la aplicacion necesita su propia cuenta de GitHub y acceso de colaborador al repositorio. No necesita acceso al ordenador donde se desarrollo la app.
+
+Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para el flujo completo de pruebas y publicacion.
+
 ## Qué hace
 
 - Horario diario y semanal, con días no lectivos y festivos de Murcia y Sangonera la Verde.

@@ -1,0 +1,42 @@
+name: Solicitar un cambio
+description: Propone una mejora o correccion para Horario Sandra.
+title: "Cambio: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Explica el cambio sin incluir datos personales, contrasenas ni enlaces privados.
+  - type: textarea
+    id: objective
+    attributes:
+      label: Que quieres cambiar
+      description: Explica el resultado que esperas.
+      placeholder: En el widget, quiero que...
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Donde debe aparecer
+      description: Indica pantalla, widget, dia, hora o seccion afectada.
+      placeholder: Widget en vista dia, bloque de tareas...
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Que ocurre ahora
+      description: Describe el comportamiento actual o deja vacio si es una mejora nueva.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Como sabremos que esta terminado
+      description: Escribe una o varias comprobaciones sencillas.
+      placeholder: Al marcar una tarea en el widget, queda marcada tambien en la aplicacion.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Capturas o informacion adicional
+      description: Adjunta imagenes si ayudan a entender el cambio.
