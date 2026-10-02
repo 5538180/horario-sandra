@@ -65,12 +65,15 @@ class ScheduleRepositoryTest {
         assertEntry("2026-09-07", "13:00", "Matemáticas")
         assertEntry("2026-09-08", "09:00", "Matemáticas")
         assertEntry("2026-09-09", "10:30", "Matemáticas")
-        assertEntry("2026-09-10", "09:00", "Complementaria Tutoría")
+        assertEntry("2026-09-10", "09:00", "Matemáticas")
         assertEntry("2026-09-11", "10:30", "Naturales")
-        val vespertino = ScheduleRepository.scheduleFor(date("2026-09-11")).entries
-            .first { it.startTime == LocalTime.parse("14:00") }
-        assertEquals("Docencia", vespertino.title)
-        assertEquals("Vespertino: Sandra - Natalia", vespertino.subtitle)
+        assertTrue(ScheduleRepository.scheduleFor(date("2026-09-11")).entries
+            .none { it.startTime >= LocalTime.parse("14:00") })
+        val thursdaySupport = ScheduleRepository.scheduleFor(date("2026-09-10")).entries
+            .first { it.startTime == LocalTime.parse("09:00") }
+        assertEquals(LocalTime.parse("10:00"), thursdaySupport.endTime)
+        assertEquals("Yo apoyo en 3.º C\nMaría Carmen Noguera Cayuelas", thursdaySupport.subtitle)
+        assertNull(thursdaySupport.supportTeacher)
         val parents = ScheduleRepository.scheduleFor(date("2026-09-07")).entries
             .first { it.startTime == LocalTime.parse("14:00") }
         assertEquals("Atención a padres", parents.title)
@@ -89,10 +92,13 @@ class ScheduleRepositoryTest {
     @Test
     fun supportTeachersAreShownInTheCorrectLessons() {
         assertSupport("2026-09-07", "10:00", "11:00", "Lucía Moya")
-        assertSupport("2026-09-08", "10:00", "11:00", "Lucía Moya")
+        assertSupport("2026-09-08", "10:00", "11:00", "Luis García")
         assertSupport("2026-09-09", "09:00", "10:00", "María Carmen Noguera Cayuelas")
         assertSupport("2026-09-10", "13:00", "14:00", "María Carmen Noguera Cayuelas")
-        assertSupport("2026-09-11", "13:00", "14:00", "María Carmen Noguera Cayuelas")
+        assertSupport("2026-09-07", "12:00", "13:00", "AT: Nazaret")
+        assertSupport("2026-09-10", "12:00", "13:00", "AT: Nazaret")
+        assertSupport("2026-09-11", "12:00", "13:00", "AT: Nazaret")
+        assertSupport("2026-09-11", "13:00", "14:00", "María Carmen Noguera Cayuelas\nAT: Nazaret")
     }
 
     @Test
@@ -109,7 +115,10 @@ class ScheduleRepositoryTest {
         assertTrue(ics.contains("SUMMARY:Horario Sandra · Matemáticas"))
         assertTrue(ics.contains("DTSTART;TZID=Europe/Madrid:20260907T090000"))
         assertTrue(ics.contains("Apoyo conmigo: Lucía Moya"))
-        assertTrue(ics.contains("SUMMARY:Horario Sandra · Docencia"))
+        assertTrue(ics.contains("Apoyo conmigo: Luis García"))
+        assertTrue(ics.contains("Apoyo conmigo: AT: Nazaret"))
+        assertTrue(ics.contains("Yo apoyo en 3.º C"))
+        assertTrue(!ics.contains("SUMMARY:Horario Sandra · Docencia"))
     }
 
     @Test
