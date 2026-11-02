@@ -28,7 +28,7 @@ object ScheduleRepository {
         val workdayIndex = WorkdayCalculator.getWorkdayIndex(date)
         return if (workdayIndex % 4 == 0) {
             // The duty calendar keeps its four-pair rotation on every weekday.
-            // Sandra is the library lead whenever her Sandra/Mª Carmen pair appears.
+            // Sandra is the library lead whenever her Sandra/José Carlos pair appears.
             PatioStatus.NoPatio(libraryResponsible = LibraryResponsible.SANDRA)
         } else {
             PatioStatus.Patio

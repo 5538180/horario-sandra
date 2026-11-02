@@ -22,8 +22,8 @@ android {
         applicationId = "es.sandra.horario"
         minSdk = 26
         targetSdk = 36
-        versionCode = 14
-        versionName = "1.5.5"
+        versionCode = 15
+        versionName = "1.5.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

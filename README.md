@@ -82,10 +82,10 @@ Edita `courseStart` y `courseEnd` en `app/src/main/java/es/sandra/horario/util/D
 Edita `patioStatus` en `ScheduleRepository.kt`. El cálculo actual usa la rueda de cuatro parejas
 del calendario de patios, empezando el 07/09/2026:
 
-- `workdayIndex % 4` para localizar el turno de Sandra/Mª Carmen.
+- `workdayIndex % 4` para localizar el turno de Sandra/José Carlos.
 - Todos los días de lunes a viernes avanzan la rueda, incluso si el centro no tiene clase ese día;
   así el siguiente día lectivo coincide con el calendario impreso de patios.
-- Cuando aparece Sandra/Mª Carmen, Sandra es la responsable de biblioteca y se resalta en amarillo.
+- Cuando aparece Sandra/José Carlos, Sandra es la responsable de biblioteca y se resalta en amarillo.
 
 ## Añadir festivos en el futuro
 
@@ -100,8 +100,8 @@ Edita `googleSheetUrl` en `DateUtils.kt`.
 
 1. Actualiza `versionCode` y `versionName` en `app/build.gradle.kts`.
 2. Añade los cambios relevantes a `CHANGELOG.md`.
-3. Ejecuta las pruebas y sube la rama `main`.
-4. Crea y publica una etiqueta con el formato `vX.Y.Z`.
+3. Ejecuta las pruebas y une el cambio en la rama `main`.
+4. Al cambiar la versión, GitHub Actions compila y publica automáticamente la etiqueta `vX.Y.Z` y la APK firmada. También se conserva la publicación mediante etiquetas.
 
 ```powershell
 git tag v1.5.4
