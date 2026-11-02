@@ -17,6 +17,7 @@ Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para el flujo completo de pruebas y 
 - Horario diario y semanal, con días no lectivos y festivos de Murcia y Sangonera la Verde.
 - Turnos de patio y biblioteca alineados con el calendario del centro.
 - Persona de apoyo identificada en cada clase que la tenga.
+- Turnos diarios de vespertino y atención a padres de 14:00 a 15:00, también en el widget y el calendario.
 - Exportación de la semana a Google Calendar.
 - Widget con cambio de día o semana, navegación y lista de tareas sincronizada.
 

@@ -92,9 +92,9 @@ object ScheduleRepository {
             entry(
                 "14:00",
                 "15:00",
-                "Atención a padres",
-                "Sandra - Luis\nVespertino: María López",
-                ScheduleType.PARENT_ATTENTION
+                "Turnos de tarde",
+                "Vespertino: María López\nAtención a padres: Luis y Sandra",
+                ScheduleType.VESPERTINO
             )
         )
         DayOfWeek.TUESDAY -> listOf(
@@ -108,7 +108,8 @@ object ScheduleRepository {
             ),
             patioSlot(),
             entry("12:00", "13:00", "Naturales", type = ScheduleType.NATURAL_SCIENCE),
-            entry("13:00", "14:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE)
+            entry("13:00", "14:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE),
+            eveningSlot("Irene", "M.ª Carmen y Marta")
         )
         DayOfWeek.WEDNESDAY -> listOf(
             entry(
@@ -121,7 +122,8 @@ object ScheduleRepository {
             entry("10:00", "10:30", "Religión", type = ScheduleType.RELIGION),
             entry("10:30", "11:00", "Matemáticas", type = ScheduleType.MATH),
             patioSlot(),
-            entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE)
+            entry("12:00", "13:00", "Despacho", "Reuniones del equipo", ScheduleType.OFFICE),
+            eveningSlot("José Carlos", "Lucía y Mariano")
         )
         DayOfWeek.THURSDAY -> listOf(
             entry("09:00", "10:00", "Matemáticas", "Yo apoyo en 3.º C\nMaría Carmen Noguera Cayuelas", ScheduleType.MATH),
@@ -135,7 +137,8 @@ object ScheduleRepository {
                 "Lengua",
                 type = ScheduleType.LANGUAGE,
                 supportTeacher = "María Carmen Noguera Cayuelas"
-            )
+            ),
+            eveningSlot("Rocío", "Fran y Carlos-Natalia")
         )
         DayOfWeek.FRIDAY -> listOf(
             entry("09:00", "10:00", "Matemáticas", type = ScheduleType.MATH),
@@ -149,10 +152,20 @@ object ScheduleRepository {
                 "Lengua",
                 type = ScheduleType.LANGUAGE,
                 supportTeacher = "María Carmen Noguera Cayuelas\nAT: Nazaret"
-            )
+            ),
+            eveningSlot("Natalia", "Sin turno")
         )
         else -> emptyList()
     }
+
+    private fun eveningSlot(vespertino: String, parents: String): ScheduleEntry =
+        entry(
+            "14:00",
+            "15:00",
+            "Turnos de tarde",
+            "Vespertino: $vespertino\nAtención a padres: $parents",
+            ScheduleType.VESPERTINO
+        )
 
     private fun patioSlot(): ScheduleEntry =
         entry("11:30", "12:00", "PATIO · Primaria", type = ScheduleType.PATIO)

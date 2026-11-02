@@ -67,8 +67,9 @@ class ScheduleRepositoryTest {
         assertEntry("2026-09-09", "10:30", "Matemáticas")
         assertEntry("2026-09-10", "09:00", "Matemáticas")
         assertEntry("2026-09-11", "10:30", "Naturales")
-        assertTrue(ScheduleRepository.scheduleFor(date("2026-09-11")).entries
-            .none { it.startTime >= LocalTime.parse("14:00") })
+        val fridayEvening = ScheduleRepository.scheduleFor(date("2026-09-11")).entries
+            .single { it.startTime == LocalTime.parse("14:00") }
+        assertEquals("Vespertino: Natalia\nAtención a padres: Sin turno", fridayEvening.subtitle)
         val thursdaySupport = ScheduleRepository.scheduleFor(date("2026-09-10")).entries
             .first { it.startTime == LocalTime.parse("09:00") }
         assertEquals(LocalTime.parse("10:00"), thursdaySupport.endTime)
@@ -76,8 +77,8 @@ class ScheduleRepositoryTest {
         assertNull(thursdaySupport.supportTeacher)
         val parents = ScheduleRepository.scheduleFor(date("2026-09-07")).entries
             .first { it.startTime == LocalTime.parse("14:00") }
-        assertEquals("Atención a padres", parents.title)
-        assertEquals("Sandra - Luis\nVespertino: María López", parents.subtitle)
+        assertEquals("Turnos de tarde", parents.title)
+        assertEquals("Vespertino: María López\nAtención a padres: Luis y Sandra", parents.subtitle)
     }
 
     @Test
@@ -194,6 +195,38 @@ class ScheduleRepositoryTest {
         assertTrue(friday.contains("Sin patio: Sandra y José Carlos"))
         assertTrue(friday.contains("José Carlos"))
         assertTrue(events.any { it.contains("Apoyo conmigo: María Carmen Noguera Cayuelas") })
+    }
+
+
+    @Test
+    fun everyWeekdayShowsTheConfirmedEveningAndParentAttentionTeams() {
+        val expected = listOf(
+            Triple("2026-11-02", "María López", "Luis y Sandra"),
+            Triple("2026-11-03", "Irene", "M.ª Carmen y Marta"),
+            Triple("2026-11-04", "José Carlos", "Lucía y Mariano"),
+            Triple("2026-11-05", "Rocío", "Fran y Carlos-Natalia"),
+            Triple("2026-11-06", "Natalia", "Sin turno")
+        )
+        expected.forEach { (day, evening, parents) ->
+            val shifts = ScheduleRepository.scheduleFor(date(day)).entries
+                .single { it.startTime == LocalTime.parse("14:00") }
+            assertEquals(LocalTime.parse("15:00"), shifts.endTime)
+            assertEquals("Turnos de tarde", shifts.title)
+            assertEquals("Vespertino: $evening\nAtención a padres: $parents", shifts.subtitle)
+        }
+    }
+
+    @Test
+    fun calendarExportsAfternoonTeamsButNotOnHolidays() {
+        val events = CalendarIcsExporter.buildIcs(date("2026-11-02")).split("BEGIN:VEVENT")
+        val wednesday = events.single { it.contains("DTSTART;TZID=Europe/Madrid:20261104T140000") }
+        assertTrue(wednesday.contains("Vespertino: José Carlos"))
+        assertTrue(wednesday.contains("Atención a padres: Lucía y Mariano"))
+        val thursday = events.single { it.contains("DTSTART;TZID=Europe/Madrid:20261105T140000") }
+        assertTrue(thursday.contains("Atención a padres: Fran y Carlos-Natalia"))
+        val holidayWeek = CalendarIcsExporter.buildIcs(date("2026-11-23"))
+        assertTrue(!holidayWeek.contains("DTSTART;TZID=Europe/Madrid:20261127T140000"))
+        assertTrue(ScheduleRepository.scheduleFor(date("2026-11-07")).entries.isEmpty())
     }
 
     private fun assertPatio(value: String) {

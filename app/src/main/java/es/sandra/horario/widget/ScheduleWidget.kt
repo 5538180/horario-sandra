@@ -92,7 +92,7 @@ private fun WidgetContent() {
         TasksPanel(tasks, tasksExpanded, taskRevision)
         Spacer(GlanceModifier.height(6.dp))
         if (weekMode) {
-            WeekBody(date)
+            WeekBody(date, GlanceModifier.defaultWeight())
         } else {
             DayBody(ScheduleRepository.scheduleFor(date), if (tasksExpanded) 3 else 8)
         }
@@ -367,14 +367,14 @@ private fun DayBody(schedule: DaySchedule, maxEntries: Int) {
             schedule.schoolDayEvent != null -> SchoolDayNotice(schedule.schoolDayEvent)
             schedule.isWeekend -> Notice("FIN DE SEMANA\nPróximo día lectivo: lunes")
             else -> {
-                // Keep the daily duty visible when expanded tasks shorten the timetable.
-                val recess = schedule.entries.firstOrNull {
-                    it.type == ScheduleType.PATIO || it.type == ScheduleType.NO_PATIO
+                // Preserve both shared duty blocks when tasks shorten the timetable.
+                val duties = schedule.entries.filter {
+                    it.type == ScheduleType.PATIO || it.type == ScheduleType.NO_PATIO ||
+                        it.type == ScheduleType.VESPERTINO || it.type == ScheduleType.PARENT_ATTENTION
                 }
-                val visible = schedule.entries.take(maxEntries)
-                val entries = if (recess != null && recess !in visible) {
-                    (visible.dropLast(1) + recess).sortedBy { it.startTime }
-                } else visible
+                val lessons = schedule.entries.filterNot { it in duties }
+                    .take((maxEntries - duties.size).coerceAtLeast(0))
+                val entries = (lessons + duties).sortedBy { it.startTime }
                 entries.forEach { EntryRow(it) }
             }
         }
@@ -382,10 +382,10 @@ private fun DayBody(schedule: DaySchedule, maxEntries: Int) {
 }
 
 @Composable
-private fun WeekBody(dateInWeek: LocalDate) {
+private fun WeekBody(dateInWeek: LocalDate, modifier: GlanceModifier) {
     val monday = CalendarIcsExporter.mondayOf(dateInWeek)
-    Column(modifier = GlanceModifier.fillMaxWidth()) {
-        (0L..4L).forEach { offset ->
+    LazyColumn(modifier = modifier.fillMaxWidth()) {
+        items((0L..4L).toList()) { offset ->
             val date = monday.plusDays(offset)
             val schedule = ScheduleRepository.scheduleFor(date)
             val summary = schedule.schoolDayEvent?.title ?: schedule.entries
@@ -397,6 +397,7 @@ private fun WeekBody(dateInWeek: LocalDate) {
             val recess = schedule.entries.firstOrNull {
                 it.type == ScheduleType.PATIO || it.type == ScheduleType.NO_PATIO
             }
+            val evening = schedule.entries.firstOrNull { it.type == ScheduleType.VESPERTINO }
             val rowColor = schedule.schoolDayEvent?.type?.hexColor?.let {
                 Color(android.graphics.Color.parseColor(it))
             } ?: Color.White
@@ -442,6 +443,12 @@ private fun WeekBody(dateInWeek: LocalDate) {
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold
                             )
+                        )
+                    }
+                    evening?.subtitle?.let { shifts ->
+                        Text(
+                            text = shifts,
+                            style = TextStyle(color = ColorProvider(Color(0xFF1F2933)), fontSize = 9.sp)
                         )
                     }
                 }
