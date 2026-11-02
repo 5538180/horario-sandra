@@ -85,7 +85,7 @@ class ScheduleRepositoryTest {
         val noPatioSandra = ScheduleRepository.scheduleFor(date("2026-09-07")).entries
             .first { it.startTime == LocalTime.parse("11:30") }
         assertEquals("NO PATIO", noPatioSandra.title)
-        assertEquals("Sandra - Mª Carmen\nResponsable de biblioteca:", noPatioSandra.subtitle)
+        assertEquals("Sandra - José Carlos\nResponsable de biblioteca:", noPatioSandra.subtitle)
         assertEquals("Sandra", noPatioSandra.highlight)
     }
 
@@ -114,6 +114,8 @@ class ScheduleRepositoryTest {
         assertTrue(ics.contains("BEGIN:VCALENDAR"))
         assertTrue(ics.contains("SUMMARY:Horario Sandra · Matemáticas"))
         assertTrue(ics.contains("DTSTART;TZID=Europe/Madrid:20260907T090000"))
+        assertTrue(ics.contains("Sandra - José Carlos"))
+        assertTrue(ics.contains("Apoyo conmigo: María Carmen Noguera Cayuelas"))
         assertTrue(ics.contains("Apoyo conmigo: Lucía Moya"))
         assertTrue(ics.contains("Apoyo conmigo: Luis García"))
         assertTrue(ics.contains("Apoyo conmigo: AT: Nazaret"))

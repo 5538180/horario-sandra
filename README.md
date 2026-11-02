@@ -82,10 +82,10 @@ Edita `courseStart` y `courseEnd` en `app/src/main/java/es/sandra/horario/util/D
 Edita `patioStatus` en `ScheduleRepository.kt`. El cálculo actual usa la rueda de cuatro parejas
 del calendario de patios, empezando el 07/09/2026:
 
-- `workdayIndex % 4` para localizar el turno de Sandra/Mª Carmen.
+- `workdayIndex % 4` para localizar el turno de Sandra/José Carlos.
 - Todos los días de lunes a viernes avanzan la rueda, incluso si el centro no tiene clase ese día;
   así el siguiente día lectivo coincide con el calendario impreso de patios.
-- Cuando aparece Sandra/Mª Carmen, Sandra es la responsable de biblioteca y se resalta en amarillo.
+- Cuando aparece Sandra/José Carlos, Sandra es la responsable de biblioteca y se resalta en amarillo.
 
 ## Añadir festivos en el futuro
 

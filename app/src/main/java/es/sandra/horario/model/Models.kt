@@ -34,7 +34,7 @@ enum class ScheduleType(val hexColor: String) {
 sealed interface PatioStatus {
     data object Patio : PatioStatus
     data class NoPatio(
-        val companion: String = "Mª Carmen",
+        val companion: String = "José Carlos",
         val libraryResponsible: LibraryResponsible
     ) : PatioStatus
 }
