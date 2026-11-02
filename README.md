@@ -100,8 +100,8 @@ Edita `googleSheetUrl` en `DateUtils.kt`.
 
 1. Actualiza `versionCode` y `versionName` en `app/build.gradle.kts`.
 2. Añade los cambios relevantes a `CHANGELOG.md`.
-3. Ejecuta las pruebas y sube la rama `main`.
-4. Crea y publica una etiqueta con el formato `vX.Y.Z`.
+3. Ejecuta las pruebas y une el cambio en la rama `main`.
+4. Al cambiar la versión, GitHub Actions compila y publica automáticamente la etiqueta `vX.Y.Z` y la APK firmada. También se conserva la publicación mediante etiquetas.
 
 ```powershell
 git tag v1.5.4

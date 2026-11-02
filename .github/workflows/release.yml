@@ -2,6 +2,10 @@ name: Publicar APK
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - "app/build.gradle.kts"
     tags:
       - "v*"
 
@@ -59,8 +63,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
+          gh release create "v${{ steps.version.outputs.value }}" \
             Horario-Sandra.apk \
             "Horario-Sandra-v${{ steps.version.outputs.value }}.apk" \
             --title "Horario Sandra v${{ steps.version.outputs.value }}" \
+            --target "$GITHUB_SHA" \
             --generate-notes

@@ -8,6 +8,7 @@ Este proyecto sigue el formato de [Keep a Changelog](https://keepachangelog.com/
 
 - La pareja de los días «NO PATIO» pasa a ser Sandra–José Carlos en la aplicación, el widget y la exportación al calendario.
 - Se mantienen los apoyos de María Carmen y la rotación de patios y biblioteca.
+- Publicación automática de la APK al incorporar una nueva versión a main.
 
 ## [1.5.5] - 2026-10-02
 
