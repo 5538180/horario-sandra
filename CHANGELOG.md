@@ -2,6 +2,15 @@
 
 Este proyecto sigue el formato de [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
+## [1.5.8] - 2026-11-02
+
+### Añadido
+
+- Turnos diarios de vespertino y atención a padres de 14:00 a 15:00 en la aplicación, widget diario y semanal, y exportación al calendario.
+- Atención a padres del miércoles: Lucía y Mariano; jueves: Fran y Carlos-Natalia.
+- El viernes el vespertino corresponde a Natalia; Sandra permanece fuera de ese turno.
+- El widget mantiene visibles los turnos de recreo y tarde al desplegar las tareas.
+
 ## [1.5.7] - 2026-11-02
 
 ### Añadido
