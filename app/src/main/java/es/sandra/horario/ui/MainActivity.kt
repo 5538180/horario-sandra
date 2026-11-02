@@ -518,7 +518,7 @@ private fun ScheduleEntryCard(entry: ScheduleEntry) {
         modifier = Modifier
             .fillMaxWidth()
             .semantics {
-                contentDescription = "${entry.timeRange} ${entry.title} ${entry.subtitle.orEmpty()} " +
+                contentDescription = "${entry.timeRange} ${entry.title} ${entry.subtitle.orEmpty()} ${entry.highlight.orEmpty()} " +
                     entry.supportTeacher?.let { "Apoyo conmigo: $it" }.orEmpty()
             },
         shape = RoundedCornerShape(8.dp),

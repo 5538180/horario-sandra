@@ -39,16 +39,27 @@ sealed interface PatioStatus {
     ) : PatioStatus
 }
 
-enum class LibraryResponsible {
-    SANDRA,
-    MARIA_CARMEN
-    ;
+enum class LibraryResponsible(val displayName: String) {
+    SANDRA("Sandra"),
+    JOSE_CARLOS("José Carlos"),
+    LUCIA("Lucía"),
+    FRAN("Fran"),
+    CARLOS("Carlos"),
+    LUIS("Luis"),
+    MARIA_CARMEN("M.ª Carmen"),
+    MARIANO("Mariano")
+}
 
-    val displayName: String
-        get() = when (this) {
-            SANDRA -> "Sandra"
-            MARIA_CARMEN -> "Mª Carmen"
-        }
+data class PlaygroundDuty(
+    val firstTeacher: LibraryResponsible,
+    val secondTeacher: LibraryResponsible,
+    val libraryResponsible: LibraryResponsible
+) {
+    val pairName: String
+        get() = "${firstTeacher.displayName} y ${secondTeacher.displayName}"
+
+    val sandraHasNoPatio: Boolean
+        get() = firstTeacher == LibraryResponsible.SANDRA || secondTeacher == LibraryResponsible.SANDRA
 }
 
 enum class SchoolCourseStatus(val label: String) {

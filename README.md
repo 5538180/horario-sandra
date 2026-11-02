@@ -79,13 +79,17 @@ Edita `courseStart` y `courseEnd` en `app/src/main/java/es/sandra/horario/util/D
 
 ## Modificar patrón de patios
 
-Edita `patioStatus` en `ScheduleRepository.kt`. El cálculo actual usa la rueda de cuatro parejas
-del calendario de patios, empezando el 07/09/2026:
+Edita `dailyDuty` y `dutyPairs` en `ScheduleRepository.kt`. La app y el widget
+muestran la pareja sin patio y resaltan al responsable de biblioteca cada día lectivo.
 
-- `workdayIndex % 4` para localizar el turno de Sandra/José Carlos.
-- Todos los días de lunes a viernes avanzan la rueda, incluso si el centro no tiene clase ese día;
-  así el siguiente día lectivo coincide con el calendario impreso de patios.
-- Cuando aparece Sandra/José Carlos, Sandra es la responsable de biblioteca y se resalta en amarillo.
+La rueda de cuatro parejas comienza el 07/09/2026:
+Sandra/José Carlos, Lucía/Fran, Carlos/Luis, M.ª Carmen/Mariano.
+El primer integrante lleva biblioteca en la primera vuelta y el segundo en la siguiente.
+Todos los días de lunes a viernes avanzan la rueda, incluidos festivos y no lectivos;
+estos días no muestran guardias. Los fines de semana no avanzan la rueda.
+
+Fechas de referencia confirmadas: 03/11 Lucía/Fran (Lucía), 05/11 M.ª Carmen/Mariano
+(M.ª Carmen), 06/11 Sandra/José Carlos (José Carlos), 11/11 M.ª Carmen/Mariano (Mariano).
 
 ## Añadir festivos en el futuro
 
