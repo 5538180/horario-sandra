@@ -39,15 +39,15 @@ class ScheduleRepositoryTest {
         assertPatio("2026-09-08")
         assertPatio("2026-09-09")
         assertPatio("2026-09-10")
-        assertNoPatio("2026-09-11", LibraryResponsible.SANDRA)
+        assertNoPatio("2026-09-11", LibraryResponsible.JOSE_CARLOS)
         assertPatio("2026-09-14")
         assertNull(ScheduleRepository.patioStatus(date("2026-09-15")))
         assertNoPatio("2026-09-17", LibraryResponsible.SANDRA)
         assertPatio("2026-09-18")
-        assertNoPatio("2026-09-23", LibraryResponsible.SANDRA)
+        assertNoPatio("2026-09-23", LibraryResponsible.JOSE_CARLOS)
         assertNoPatio("2026-09-29", LibraryResponsible.SANDRA)
         assertPatio("2026-09-30")
-        assertNoPatio("2026-10-05", LibraryResponsible.SANDRA)
+        assertNoPatio("2026-10-05", LibraryResponsible.JOSE_CARLOS)
         assertNoPatio("2026-10-09", LibraryResponsible.SANDRA)
     }
 
@@ -85,7 +85,7 @@ class ScheduleRepositoryTest {
         val noPatioSandra = ScheduleRepository.scheduleFor(date("2026-09-07")).entries
             .first { it.startTime == LocalTime.parse("11:30") }
         assertEquals("NO PATIO", noPatioSandra.title)
-        assertEquals("Sandra - José Carlos\nResponsable de biblioteca:", noPatioSandra.subtitle)
+        assertEquals("Sin patio: Sandra y José Carlos\nResponsable de biblioteca:", noPatioSandra.subtitle)
         assertEquals("Sandra", noPatioSandra.highlight)
     }
 
@@ -114,7 +114,7 @@ class ScheduleRepositoryTest {
         assertTrue(ics.contains("BEGIN:VCALENDAR"))
         assertTrue(ics.contains("SUMMARY:Horario Sandra · Matemáticas"))
         assertTrue(ics.contains("DTSTART;TZID=Europe/Madrid:20260907T090000"))
-        assertTrue(ics.contains("Sandra - José Carlos"))
+        assertTrue(ics.contains("Sin patio: Sandra y José Carlos"))
         assertTrue(ics.contains("Apoyo conmigo: María Carmen Noguera Cayuelas"))
         assertTrue(ics.contains("Apoyo conmigo: Lucía Moya"))
         assertTrue(ics.contains("Apoyo conmigo: Luis García"))
@@ -145,6 +145,55 @@ class ScheduleRepositoryTest {
         assertTrue(ics.contains("DTSTART;VALUE=DATE:20260915"))
         assertTrue(ics.contains("SUMMARY:Horario Sandra · Romería de Nuestra Señora de la Fuensanta"))
         assertTrue(!ics.contains("DTSTART;TZID=Europe/Madrid:20260915"))
+    }
+
+
+    @Test
+    fun dailyDutyMatchesTheConfirmedNovemberRotaAndAlternation() {
+        val expected = listOf(
+            Triple("2026-11-03", "Lucía y Fran", "Lucía"),
+            Triple("2026-11-04", "Carlos y Luis", "Carlos"),
+            Triple("2026-11-05", "M.ª Carmen y Mariano", "M.ª Carmen"),
+            Triple("2026-11-06", "Sandra y José Carlos", "José Carlos"),
+            Triple("2026-11-09", "Lucía y Fran", "Fran"),
+            Triple("2026-11-10", "Carlos y Luis", "Luis"),
+            Triple("2026-11-11", "M.ª Carmen y Mariano", "Mariano"),
+            Triple("2026-11-12", "Sandra y José Carlos", "Sandra")
+        )
+        expected.forEach { (day, pair, responsible) ->
+            val duty = requireNotNull(ScheduleRepository.dailyDuty(date(day)))
+            assertEquals(pair, duty.pairName)
+            assertEquals(responsible, duty.libraryResponsible.displayName)
+            val recess = ScheduleRepository.scheduleFor(date(day)).entries
+                .single { it.startTime == LocalTime.parse("11:30") }
+            assertEquals("Sin patio: $pair\nResponsable de biblioteca:", recess.subtitle)
+            assertEquals(responsible, recess.highlight)
+            assertEquals(if (duty.sandraHasNoPatio) "NO PATIO" else "PATIO · Primaria", recess.title)
+        }
+    }
+
+    @Test
+    fun dailyDutyIsHiddenOnWeekendsHolidaysAndOutsideTheCourse() {
+        listOf("2026-09-06", "2026-11-07", "2026-11-08", "2026-10-12",
+            "2026-11-27", "2026-12-28", "2027-07-01").forEach {
+            assertNull(ScheduleRepository.dailyDuty(date(it)))
+        }
+        // Holidays advance the rota even though no duty is displayed on them.
+        assertEquals("Lucía y Fran", ScheduleRepository.dailyDuty(date("2026-09-08"))?.pairName)
+        assertEquals("Carlos y Luis", ScheduleRepository.dailyDuty(date("2026-10-13"))?.pairName)
+    }
+
+    @Test
+    fun calendarIncludesOtherPairsAndTheirLibraryResponsible() {
+        val events = CalendarIcsExporter.buildIcs(date("2026-11-02")).split("BEGIN:VEVENT")
+        val tuesday = events.single { it.contains("DTSTART;TZID=Europe/Madrid:20261103T113000") }
+        assertTrue(tuesday.contains("Sin patio: Lucía y Fran"))
+        assertTrue(tuesday.contains("Responsable de biblioteca:"))
+        assertTrue(tuesday.contains("Lucía"))
+        val friday = events.single { it.contains("DTSTART;TZID=Europe/Madrid:20261106T113000") }
+        assertTrue(friday.contains("Sin patio: Sandra y José Carlos"))
+        assertTrue(friday.contains("José Carlos"))
+        assertTrue(events.any { it.contains("Apoyo conmigo: María Carmen Noguera Cayuelas") })
     }
 
     private fun assertPatio(value: String) {

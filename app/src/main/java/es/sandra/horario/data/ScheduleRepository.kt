@@ -3,6 +3,7 @@ package es.sandra.horario.data
 import es.sandra.horario.model.DaySchedule
 import es.sandra.horario.model.LibraryResponsible
 import es.sandra.horario.model.PatioStatus
+import es.sandra.horario.model.PlaygroundDuty
 import es.sandra.horario.model.ScheduleEntry
 import es.sandra.horario.model.ScheduleType
 import es.sandra.horario.model.SchoolCourseStatus
@@ -19,17 +20,30 @@ object ScheduleRepository {
         else -> SchoolCourseStatus.ACTIVE
     }
 
-    fun patioStatus(date: LocalDate): PatioStatus? {
+    private val dutyPairs = listOf(
+        LibraryResponsible.SANDRA to LibraryResponsible.JOSE_CARLOS,
+        LibraryResponsible.LUCIA to LibraryResponsible.FRAN,
+        LibraryResponsible.CARLOS to LibraryResponsible.LUIS,
+        LibraryResponsible.MARIA_CARMEN to LibraryResponsible.MARIANO
+    )
+
+    fun dailyDuty(date: LocalDate): PlaygroundDuty? {
         if (
             courseStatus(date) != SchoolCourseStatus.ACTIVE ||
             DateUtils.isWeekend(date) ||
             SchoolCalendarRepository.isNonTeachingDay(date)
         ) return null
-        val workdayIndex = WorkdayCalculator.getWorkdayIndex(date)
-        return if (workdayIndex % 4 == 0) {
-            // The duty calendar keeps its four-pair rotation on every weekday.
-            // Sandra is the library lead whenever her Sandra/José Carlos pair appears.
-            PatioStatus.NoPatio(libraryResponsible = LibraryResponsible.SANDRA)
+        // The rota advances on every weekday, including holidays.
+        val index = WorkdayCalculator.getWorkdayIndex(date)
+        val pair = dutyPairs[index % dutyPairs.size]
+        val responsible = if ((index / dutyPairs.size) % 2 == 0) pair.first else pair.second
+        return PlaygroundDuty(pair.first, pair.second, responsible)
+    }
+
+    fun patioStatus(date: LocalDate): PatioStatus? {
+        val duty = dailyDuty(date) ?: return null
+        return if (duty.sandraHasNoPatio) {
+            PatioStatus.NoPatio(libraryResponsible = duty.libraryResponsible)
         } else {
             PatioStatus.Patio
         }
@@ -54,8 +68,9 @@ object ScheduleRepository {
             return DaySchedule(date, status, isWeekend = true, entries = emptyList())
         }
         val patio = patioStatus(date)
+        val duty = requireNotNull(dailyDuty(date))
         val entries = weeklyEntries(date.dayOfWeek).map {
-            if (it.type == ScheduleType.PATIO) patioEntry(it.startTime, it.endTime, patio) else it
+            if (it.type == ScheduleType.PATIO) patioEntry(it.startTime, it.endTime, patio, duty) else it
         }
         return DaySchedule(date, status, isWeekend = false, entries = entries, patioStatus = patio)
     }
@@ -142,15 +157,22 @@ object ScheduleRepository {
     private fun patioSlot(): ScheduleEntry =
         entry("11:30", "12:00", "PATIO · Primaria", type = ScheduleType.PATIO)
 
-    private fun patioEntry(start: LocalTime, end: LocalTime, patio: PatioStatus?): ScheduleEntry =
-        when (patio) {
-            is PatioStatus.NoPatio -> {
-                val responsible = patio.libraryResponsible.displayName
-                val subtitle = "Sandra - ${patio.companion}\nResponsable de biblioteca:"
-                ScheduleEntry(start, end, "NO PATIO", subtitle, ScheduleType.NO_PATIO, highlight = responsible)
-            }
-            else -> ScheduleEntry(start, end, "PATIO · Primaria", type = ScheduleType.PATIO)
-        }
+    private fun patioEntry(
+        start: LocalTime,
+        end: LocalTime,
+        patio: PatioStatus?,
+        duty: PlaygroundDuty
+    ): ScheduleEntry {
+        val noPatio = patio is PatioStatus.NoPatio
+        return ScheduleEntry(
+            startTime = start,
+            endTime = end,
+            title = if (noPatio) "NO PATIO" else "PATIO · Primaria",
+            subtitle = "Sin patio: ${duty.pairName}\nResponsable de biblioteca:",
+            type = if (noPatio) ScheduleType.NO_PATIO else ScheduleType.PATIO,
+            highlight = duty.libraryResponsible.displayName
+        )
+    }
 
     private fun entry(
         start: String,

@@ -366,7 +366,17 @@ private fun DayBody(schedule: DaySchedule, maxEntries: Int) {
             schedule.courseStatus != SchoolCourseStatus.ACTIVE -> Notice(schedule.courseStatus.label)
             schedule.schoolDayEvent != null -> SchoolDayNotice(schedule.schoolDayEvent)
             schedule.isWeekend -> Notice("FIN DE SEMANA\nPróximo día lectivo: lunes")
-            else -> schedule.entries.take(maxEntries).forEach { EntryRow(it) }
+            else -> {
+                // Keep the daily duty visible when expanded tasks shorten the timetable.
+                val recess = schedule.entries.firstOrNull {
+                    it.type == ScheduleType.PATIO || it.type == ScheduleType.NO_PATIO
+                }
+                val visible = schedule.entries.take(maxEntries)
+                val entries = if (recess != null && recess !in visible) {
+                    (visible.dropLast(1) + recess).sortedBy { it.startTime }
+                } else visible
+                entries.forEach { EntryRow(it) }
+            }
         }
     }
 }
@@ -384,6 +394,9 @@ private fun WeekBody(dateInWeek: LocalDate) {
                         it.type == ScheduleType.PARENT_ATTENTION || it.type == ScheduleType.VESPERTINO
                 }
                 .joinToString(" · ") { it.title.replace(" · Primaria", "") }
+            val recess = schedule.entries.firstOrNull {
+                it.type == ScheduleType.PATIO || it.type == ScheduleType.NO_PATIO
+            }
             val rowColor = schedule.schoolDayEvent?.type?.hexColor?.let {
                 Color(android.graphics.Color.parseColor(it))
             } ?: Color.White
@@ -414,6 +427,23 @@ private fun WeekBody(dateInWeek: LocalDate) {
                         text = summary.ifBlank { "Sin datos" },
                         style = TextStyle(color = ColorProvider(Color(0xFF1F2933)), fontSize = 10.sp)
                     )
+                    recess?.subtitle?.substringBefore('\n')?.let { pair ->
+                        Text(
+                            text = pair,
+                            style = TextStyle(color = ColorProvider(Color(0xFF1F2933)), fontSize = 9.sp)
+                        )
+                    }
+                    recess?.highlight?.let { responsible ->
+                        Text(
+                            text = "Biblioteca: $responsible",
+                            modifier = GlanceModifier.background(Color(0xFFFFF2A8)).padding(horizontal = 3.dp),
+                            style = TextStyle(
+                                color = ColorProvider(Color(0xFF3A2F00)),
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
                 }
             }
         }

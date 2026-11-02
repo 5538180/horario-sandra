@@ -2,6 +2,18 @@
 
 Este proyecto sigue el formato de [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
+## [1.5.7] - 2026-11-02
+
+### Añadido
+
+- Pareja sin patio y responsable de biblioteca visibles cada día lectivo en la aplicación, widget y exportación al calendario.
+- Rueda completa: Sandra/José Carlos, Lucía/Fran, Carlos/Luis y M.ª Carmen/Mariano.
+
+### Corregido
+
+- El responsable de biblioteca alterna entre los dos integrantes de cada pareja.
+- Se conserva la rotación por días de lunes a viernes, incluidos festivos, y se oculta en días sin clase.
+
 ## [1.5.6] - 2026-11-02
 
 ### Cambiado
